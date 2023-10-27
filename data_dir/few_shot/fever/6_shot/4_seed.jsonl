@@ -1,0 +1,6 @@
+{"id": 145563, "claim": "Jason Sudeikis started on SNL as a writer in 2003.", "gold_evidence_text": "Jason_Sudeikis: In 2003 , he was hired as a sketch writer for Saturday Night Live and was a cast member from 2005 to 2013 .", "label": "SUPPORTED"}
+{"id": 20587, "claim": "Jennifer Hudson came in seventh place on American Idol.", "gold_evidence_text": "Jennifer_Hudson: She rose to fame in 2004 as a finalist on the third season of American Idol , coming in seventh place .", "label": "SUPPORTED"}
+{"id": 199387, "claim": "Jon Watts was the only writer ever for Spider-Man Homecoming.", "gold_evidence_text": "Jon_Watts: Watts directed and co-wrote the upcoming Marvel Studios and Sony Pictures produced Spider-Man : Homecoming , slated for a July 7 , 2017 release .", "label": "REFUTED"}
+{"id": 83619, "claim": "Before Night Falls is an autobiographical film.", "gold_evidence_text": "Before_Night_Falls_(film): Before Night Falls is a 2000 American biographical romantic drama directed by Julian Schnabel .", "label": "REFUTED"}
+{"id": 44580, "claim": "Marlon Brando supported the soviets.", "gold_evidence_text": "Bambuti ( film ) , a 1956 West German film directed by Bernhard Grzimek and Michael Grzimek", "label": "NEI"}
+{"id": 182563, "claim": "Cars are a popular culture category.", "gold_evidence_text": "The population was 173 at the 2010 census .", "label": "NEI"}

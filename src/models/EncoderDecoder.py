@@ -41,8 +41,14 @@ class EncoderDecoder(LightningModule):
             intrinsic_plugin_on_step(self)
 
         if self.config.mc_loss > 0 or self.config.unlikely_loss > 0:
-            input_ids, choices_ids, labels = batch["input_ids"], batch["answer_choices_ids"], batch["labels"]
-            bs, num_choices = choices_ids.size()[:2]
+            verification_input_ids, choices_ids, v_labels = batch["verification_input_ids"], batch["answer_choices_ids"], batch["v_labels"]
+            idxs = batch["idx"]
+            # input_ids, choices_ids, labels = batch["input_ids"], batch["answer_choices_ids"], batch["labels"]
+            # bs, num_choices = choices_ids.size()[:2]
+            input_ids = verification_input_ids
+            labels= v_labels
+            num_choices = self.config.n_ways
+            bs = len(idxs)
 
             flat_choices_ids = choices_ids.flatten(0, 1)
             attention_mask = (input_ids != self.tokenizer.pad_token_id).float()  # [bs, max_seq_len]

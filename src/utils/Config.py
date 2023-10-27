@@ -32,6 +32,9 @@ class Config(object):
         self.raft_validation_start = 0
         self.raft_labels_in_input_string = "comma"
         self.cleaned_answer_choices_b77 = False
+        self.dataset_offline="/home/yhwu/t-few/data_dir"
+        self.sample_num=100000
+        self.n_ways = 3
 
         # Compute backend configs
         self.compute_precision = "bf16"
@@ -48,6 +51,7 @@ class Config(object):
         self.length_norm = 0
         self.grad_accum_factor = 1
         self.split_option_at_inference = False  # Whether to split the answer choices during eval to lower memory usage for datasets with lots of answer choices
+        self.stage = 1
 
         # Optimization configs
         self.optimizer = "adafactor"
