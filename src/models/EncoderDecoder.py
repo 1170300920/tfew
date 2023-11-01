@@ -138,8 +138,13 @@ class EncoderDecoder(LightningModule):
         if self.config.model_modifier == "intrinsic":
             from .intrinsic import intrinsic_plugin_on_step
             intrinsic_plugin_on_step(self)
+        verification_input_ids, choices_ids, v_labels = batch["verification_input_ids"], batch["answer_choices_ids"], batch["v_labels"]
+        idxs = batch["idx"]
+        num_choices = self.config.n_ways
 
-        input_ids, choices_ids, labels = batch["input_ids"], batch["answer_choices_ids"], batch["labels"]
+        # input_ids, choices_ids, labels = batch["input_ids"], batch["answer_choices_ids"], batch["labels"]
+        input_ids = verification_input_ids
+        labels = v_labels
 
         if not self.config.split_option_at_inference:
             bs, num_choices = choices_ids.size()[:2]
@@ -259,7 +264,9 @@ class EncoderDecoder(LightningModule):
                 accumulated[key] = [v for v, m in zip(values, valid_mask) if m]
 
             # compute and log results
-            metrics = self.dataset_reader.compute_metric(accumulated)
+            result_fname=self.config.test_pred_file
+            metrics = self.dataset_reader.compute_metric(accumulated,result_fname)
+            # metrics = self.dataset_reader.compute_metric(accumulated)
             for key, value in accumulated.items():
                 if key.startswith("log."):
                     metrics[key.replace("log.", "")] = mean(value)
@@ -307,14 +314,22 @@ class EncoderDecoder(LightningModule):
                 model_fname = os.path.join(self.config.exp_dir, f"global_step{self.global_step}.pt")
 
             if self.use_deepspeed or self.use_ddp:
-                distributed_save_path = os.path.join(self.config.exp_dir, "saved_model")
-                self.trainer.model.save_checkpoint(distributed_save_path)
+                # distributed_save_path = os.path.join(self.config.exp_dir, "saved_model")
+                # self.trainer.model.save_checkpoint(distributed_save_path)
                 torch.distributed.barrier()
+                # if dist.get_rank() == 0:
+                #     trainable_states = zero_to_fp32.get_fp32_state_dict_from_zero_checkpoint(distributed_save_path)
+                #     prefix_length = len("module.model.")
+                #     trainable_states = {k[prefix_length:]: v for k, v in trainable_states.items()}
+                #     torch.save(trainable_states, model_fname)
                 if dist.get_rank() == 0:
-                    trainable_states = zero_to_fp32.get_fp32_state_dict_from_zero_checkpoint(distributed_save_path)
-                    prefix_length = len("module.model.")
-                    trainable_states = {k[prefix_length:]: v for k, v in trainable_states.items()}
+                    trainable_states = {
+                        param_name: param_weight.cpu()
+                        for param_name, param_weight in self.model.state_dict().items()
+                        if param_name in self.trainable_param_names
+                    }
                     torch.save(trainable_states, model_fname)
+                    print(model_fname)
             else:
                 trainable_states = {
                     param_name: param_weight.cpu()

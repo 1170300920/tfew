@@ -303,7 +303,7 @@ class VerifyReader(BaseDatasetReader):
 
         for i,p in enumerate(accumulated["prediction"]):
             pre.append(p)
-            tmp_label = accumulated["labels"][i]
+            tmp_label = accumulated["label"][i]
             if isinstance(tmp_label,list):
                 tmp_label = tmp_label[0]
             labels.append(tmp_label)
